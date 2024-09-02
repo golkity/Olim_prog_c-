@@ -1,0 +1,57 @@
+#include "bits-stdc++.h"
+using namespace std;
+using Matrix = vector<vector<int64_t>>;
+Matrix multiplyMatrices(const Matrix &a, const Matrix &b, int64_t m) {
+    Matrix result(2, vector<int64_t>(2));
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 2; ++j) {
+            result[i][j] = 0;
+            for (int k = 0; k < 2; ++k) {
+                result[i][j] = (result[i][j] + a[i][k] * b[k][j]) % m;
+            }
+        }
+    }
+    return result;
+}
+
+Matrix fastMatrixExponentiation(Matrix base, int64_t exp, int64_t m) {
+    Matrix result = {{1, 0}, {0, 1}};
+    while (exp > 0) {
+        if (exp % 2 == 1) {
+            result = multiplyMatrices(result, base, m);
+        }
+        base = multiplyMatrices(base, base, m);
+        exp /= 2;
+    }
+    return result;
+}
+
+int64_t FibonacciModuloM(int64_t n, int64_t m) {
+    Matrix M = {{0, 1}, {1, 1}};
+    Matrix P = fastMatrixExponentiation(M, n, m);
+    return P[0][1];
+}
+
+int64_t lastDigitOfFibonacciSum(int64_t n) {
+    if (n <= 0) return 0;
+    int64_t lastDigit = FibonacciModuloM(n + 2, 10) - 1;
+    return (lastDigit + 10) % 10;
+}
+
+int64_t lastDigitOfPartialFibonacciSum(int64_t l, int64_t r) {
+    int64_t sumR = lastDigitOfFibonacciSum(r);
+    int64_t sumLMinus1 = lastDigitOfFibonacciSum(l - 1);
+    int64_t result = (sumR - sumLMinus1 + 10) % 10;
+    return result;
+}
+
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    int64_t n,m;
+    cin >> n>>m;
+    cout << lastDigitOfPartialFibonacciSum(n,m);
+    return 0;
+}
