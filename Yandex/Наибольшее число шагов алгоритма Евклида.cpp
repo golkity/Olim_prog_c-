@@ -1,17 +1,5 @@
 #include "bits-stdc++.h"
 using namespace std;
-
-int gcd_steps(int a, int b) {
-    int steps = 0;
-    while (b) {
-        int temp = b;
-        b = a % b;
-        a = temp;
-        steps++;
-    }
-    return steps;
-}
-
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
